@@ -1,0 +1,292 @@
+<div
+  class="side-nav-bar"
+  [ngClass]="{ 'side-nav-bar-collapsed': !(showSideNav | async) }"
+>
+  <div
+    class="side-nav-bar-overlay"
+    [ngStyle]="{
+      transition:
+        'background-color ' +
+        customSideMenu.customParams.duration +
+        's, visibility ' +
+        customSideMenu.customParams.duration +
+        's'
+    }"
+    [ngClass]="{ 'side-nav-bar-overlay-collapsed': !(showSideNav | async) }"
+    (click)="onSidebarClose()"
+  ></div>
+  {{ showSideNav | async }}
+
+  <div
+    class="side-nav-bar-menu-container"
+    [ngStyle]="getSideNavBarStyle((showSideNav | async)!)"
+  >
+    <!-- <div  [ngClass]="{'side-nav-bar-animated' : (showSideNav | async)}"> -->
+      <div class="icone-close">
+        <img
+          [src]="customSideMenu.customIcons.closeIcone"
+          class="closeIcone"
+          (click)="onSidebarClose()"
+        />
+      </div>
+      <div class="logo">
+        <img
+          [ngStyle]="{ width: customSideMenu.customLogo.sizeLogo }"
+          [src]="customSideMenu.customLogo.logo"
+        />
+      </div>
+      <div class="side-nav-bar-content-container">
+        <div #navContent style="width: 100%">
+          <div class="side-nav-bar-content">
+            <ul class="side-nav-bar-menu">
+              <li
+                class="side-nav-bar-menu__item"
+                *ngFor="let categories of navItems.category!"
+              >
+                <div
+                  *ngIf="categories.labelCategory != ''"
+                  class="category"
+                  [ngStyle]="{
+                    color: customSideMenu.customNavItems.categoryColor,
+                    'font-size': customSideMenu.customNavItems.categorySize,
+                    'font-family':
+                      customSideMenu.customNavItems.categoryFontFamily
+                  }"
+                >
+                  {{ categories.labelCategory }}
+                </div>
+
+                <div
+                  class="cat-child"
+                  *ngFor="let navItem of categories.content"
+                >
+                  <div
+                    class="cat-child__head"
+                    [ngClass]="{
+                      cat_child_clicked: clickedItem == navItem.label
+                    }"
+                    (mouseover)="hover = true; label = navItem.label!"
+                    (mouseleave)="hover = false; label = ''"
+                  >
+                    <div class="navItem" (click)="clickItem(navItem.label!)">
+                      <img
+                        *ngIf="
+                          navItem?.icone != '' &&
+                          !hover &&
+                          label != navItem?.label &&
+                          clickedItem != navItem.label
+                        "
+                        [ngStyle]="{
+                          width: customSideMenu.customNavItems.sizeIcone
+                        }"
+                        [src]="navItem?.icone"
+                      />
+                      <img
+                        *ngIf="
+                          navItem?.icone != '' &&
+                          hover &&
+                          label != navItem?.label &&
+                          clickedItem != navItem.label
+                        "
+                        [ngStyle]="{
+                          width: customSideMenu.customNavItems.sizeIcone
+                        }"
+                        [src]="navItem?.icone"
+                      />
+                      <img
+                        *ngIf="
+                          navItem.iconeActive != '' &&
+                          hover &&
+                          label == navItem.label &&
+                          clickedItem != navItem.label
+                        "
+                        [ngStyle]="{
+                          width: customSideMenu.customNavItems.sizeIcone
+                        }"
+                        [src]="navItem.iconeActive"
+                      />
+                      <img
+                        *ngIf="
+                          navItem.iconeActive != '' &&
+                          clickedItem == navItem.label
+                        "
+                        [ngStyle]="{
+                          width: customSideMenu.customNavItems.sizeIcone,
+                          content: ' url(' + navItem.iconeActive + ')'
+                        }"
+                      />
+                      <!-- <div  *ngIf="navItem.icone != '' "
+                    [ngStyle]="{ 'background': ' url(' + navItem.icone  + ') no-repeat 0 0 / cover' }"
+                     class="imgggg"></div> -->
+
+                      <span
+                        *ngIf="navItem.label != ''"
+                        [ngStyle]="{
+                          color: customSideMenu.customNavItems.navItemsColor,
+                          'font-family':
+                            customSideMenu.customNavItems.navItemsFontFamily,
+                          'font-size':
+                            customSideMenu.customNavItems.navItemsSize,
+                          'margin-left': '6px',
+                          'margin-right': '6px'
+                        }"
+                        >{{ navItem.label }}</span
+                      >
+                      <div
+                        *ngIf="navItem.badge != ''"
+                        class="badge"
+                        [ngStyle]="{
+                          'background-color':
+                            customSideMenu.customBadge.backgroundColor,
+                          'border-radius':
+                            customSideMenu.customBadge.borderRaduis
+                        }"
+                      >
+                        <span
+                          *ngIf="navItem.badge != ''"
+                          [ngStyle]="{
+                            'font-family':
+                              customSideMenu.customNavItems.navItemsFontFamily,
+                            'font-size': customSideMenu.customBadge.size,
+                            color: customSideMenu.customBadge.textColor
+                          }"
+                        >
+                          {{ navItem.badge }}</span
+                        >
+                      </div>
+                    </div>
+                    <div
+                      class="exp-button"
+                      (click)="showSubMenu(navItem.label!)"
+                    >
+                      <img
+                        [src]="customSideMenu.customIcons.expandButtomIcone"
+                        *ngIf="
+                          navItem.submenu!.length > 0 &&
+                          display == false &&
+                          clickedSubmenu != navItem.label!
+                        "
+                      />
+                      <img
+                        [src]="customSideMenu.customIcons.expandTopIcone"
+                        *ngIf="
+                          navItem.submenu!.length > 0 &&
+                          display == true &&
+                          clickedSubmenu == navItem.label!
+                        "
+                      />
+                    </div>
+                  </div>
+                  <ul
+                    *ngIf="
+                      navItem.submenu!.length > 0 &&
+                      display == true &&
+                      clickedSubmenu == navItem.label!
+                    "
+                    class="side-nav-bar-submenu side-nav-bar-submenu-animated"
+                  >
+                    <li
+                      *ngFor="let submenu of navItem.submenu"
+                      [ngClass]="{
+                        cat_child_clicked: clickedItem == submenu.label
+                      }"
+                      (mouseover)="hover = true; label = submenu.label"
+                      (mouseleave)="hover = false; label = ''"
+                    >
+                      <div class="navItem" (click)="clickItem(submenu.label)">
+                        <img
+                          *ngIf="
+                            submenu.icone != '' &&
+                            !hover &&
+                            label != submenu.label &&
+                            clickedItem != submenu.label
+                          "
+                          [ngStyle]="{
+                            width: customSideMenu.customNavItems.sizeIcone
+                          }"
+                          [src]="submenu.icone"
+                        />
+                        <img
+                          *ngIf="
+                            navItem?.icone != '' &&
+                            hover &&
+                            label != submenu.label &&
+                            clickedItem != submenu.label
+                          "
+                          [ngStyle]="{
+                            width: customSideMenu.customNavItems.sizeIcone
+                          }"
+                          [src]="submenu.icone"
+                        />
+                        <img
+                          *ngIf="
+                            submenu.iconeActive != '' &&
+                            hover &&
+                            label == submenu.label &&
+                            clickedItem != submenu.label
+                          "
+                          [ngStyle]="{
+                            width: customSideMenu.customNavItems.sizeIcone
+                          }"
+                          [src]="submenu.iconeActive"
+                        />
+                        <img
+                          *ngIf="
+                            submenu.iconeActive != '' &&
+                            clickedItem == submenu.label
+                          "
+                          [ngStyle]="{
+                            width: customSideMenu.customNavItems.sizeIcone,
+                            content: ' url(' + submenu.iconeActive + ')'
+                          }"
+                        />
+
+                        <span
+                          *ngIf="submenu.label! != ''"
+                          [ngStyle]="{
+                            'font-family':
+                              customSideMenu.customNavItems.navItemsFontFamily,
+                            color: customSideMenu.customNavItems.navItemsColor,
+                            'font-size':
+                              customSideMenu.customNavItems.navItemsSize,
+                            'margin-left': '6px',
+                            'margin-right': '6px'
+                          }"
+                        >
+                          {{ submenu.label }}</span
+                        >
+                        <div
+                          *ngIf="submenu.badge != ''"
+                          class="badge"
+                          [ngStyle]="{
+                            'background-color':
+                              customSideMenu.customBadge.backgroundColor,
+                            'border-radius':
+                              customSideMenu.customBadge.borderRaduis
+                          }"
+                        >
+                          <span
+                            *ngIf="submenu.badge != ''"
+                            [ngStyle]="{
+                              'font-family':
+                                customSideMenu.customNavItems
+                                  .navItemsFontFamily,
+                              'font-size': customSideMenu.customBadge.size,
+                              color: customSideMenu.customBadge.textColor
+                            }"
+                          >
+                            {{ submenu.badge }}</span
+                          >
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
+</div>

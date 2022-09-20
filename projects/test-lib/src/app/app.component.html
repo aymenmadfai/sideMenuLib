@@ -1,0 +1,6 @@
+<lib-side-bar
+ [customSideMenu]="customSideMenu"
+ [navItems] ="navItems"
+  (ItemEvent)="clickItemEvent($event)"
+></lib-side-bar>
+<router-outlet></router-outlet>
